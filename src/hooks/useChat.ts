@@ -10,7 +10,6 @@ export function useChat() {
     currentSession,
     user,
     sendMessage,
-    createNewSession,
     loadChatHistory,
     setUser,
     clearMessages,
@@ -21,12 +20,12 @@ export function useChat() {
   const initializeChat = useCallback(async (userId: string) => {
     try {
       if (!currentSession) {
-        await createNewSession(userId)
+        //await createNewSession(userId)
       }
     } catch (err) {
       console.error('Failed to initialize chat:', err)
     }
-  }, [currentSession, createNewSession])
+  }, [currentSession])
 
   const sendChatMessage = useCallback(async (content: string) => {
     try {
@@ -40,9 +39,9 @@ export function useChat() {
   const retryConnection = useCallback(async () => {
     if (user?.id) {
       setError(null)
-      await createNewSession(user.id)
+      //await createNewSession(user.id)
     }
-  }, [user?.id, setError, createNewSession])
+  }, [user?.id, setError])
 
   const clearChat = useCallback(() => {
     clearMessages()
