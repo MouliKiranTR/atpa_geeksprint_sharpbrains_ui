@@ -1,9 +1,10 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { Message, ChatSession, User } from '@/types'
+import { Message, ChatSession, User, ChatSettings } from '@/types'
 import { generateId } from '@/lib/utils'
 import apiService from '@/services/api'
 import { getDemoResponse, isOfflineMode } from '@/components/chat/demo-handler'
+import { DEFAULT_CHAT_SETTINGS } from '@/constants'
 
 interface ChatState {
   // State
@@ -13,6 +14,7 @@ interface ChatState {
   isLoading: boolean
   isTyping: boolean
   error: string | null
+  settings: ChatSettings
 
   // Actions
   setUser: (user: User) => void
@@ -23,6 +25,7 @@ interface ChatState {
   setTyping: (isTyping: boolean) => void
   setLoading: (isLoading: boolean) => void
   setError: (error: string | null) => void
+  setSettings: (settings: ChatSettings) => void
   clearMessages: () => void
   reset: () => void
 }
@@ -34,6 +37,7 @@ const initialState = {
   isLoading: false,
   isTyping: false,
   error: null,
+  settings: DEFAULT_CHAT_SETTINGS,
 }
 
 export const useChatStore = create<ChatState>()(
@@ -48,6 +52,10 @@ export const useChatStore = create<ChatState>()(
 
         setCurrentSession: (session) => {
           set({ currentSession: session }, false, 'setCurrentSession')
+        },
+
+        setSettings: (settings) => {
+          set({ settings }, false, 'setSettings')
         },
 
         addMessage: (messageData) => {
@@ -67,7 +75,7 @@ export const useChatStore = create<ChatState>()(
         },
 
         sendMessage: async (content) => {
-          const { currentSession, addMessage, setLoading, setTyping, setError, error } = get()
+          const { currentSession, addMessage, setLoading, setTyping, setError, error, settings } = get()
           
           try {
             setError(null)
@@ -86,6 +94,7 @@ export const useChatStore = create<ChatState>()(
             // Send to API
             const response = await apiService.sendMessage(
               content,
+              settings
             )
 
             if (response.success && response.data) {
@@ -95,6 +104,7 @@ export const useChatStore = create<ChatState>()(
                 sender: 'agent',
                 type: 'text',
                 metadata: response.data.metadata,
+                github_files: response.data.github_files // Add GitHub files to the message
               })
             } else {
               throw new Error(response.error || 'Failed to send message')
@@ -130,7 +140,6 @@ export const useChatStore = create<ChatState>()(
           }
         },
 
-        
         setTyping: (isTyping) => {
           set({ isTyping }, false, 'setTyping')
         },
@@ -156,6 +165,7 @@ export const useChatStore = create<ChatState>()(
         partialize: (state) => ({
           user: state.user,
           currentSession: state.currentSession,
+          settings: state.settings,
         }),
       }
     ),

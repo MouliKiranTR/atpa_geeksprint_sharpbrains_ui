@@ -3,6 +3,7 @@ import { Message as MessageType } from '@/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { formatTimestamp, cn } from '@/lib/utils'
 import { User, Bot, AlertCircle } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 
 interface MessageProps {
   message: MessageType
@@ -57,7 +58,6 @@ export function Message({ message, className }: MessageProps) {
               <span className="text-xs font-medium">Error</span>
             </div>
           )}
-          
           {isTyping ? (
             <div className="flex items-center gap-1">
               <div className="flex gap-1">
@@ -68,7 +68,10 @@ export function Message({ message, className }: MessageProps) {
               <span className="text-xs ml-2">Agent is typing...</span>
             </div>
           ) : (
-            <p className="whitespace-pre-wrap break-words">{message.message}</p>
+            <div 
+        className="content-wrapper"
+        dangerouslySetInnerHTML={{ __html: message.message }}
+      />
           )}
         </div>
 

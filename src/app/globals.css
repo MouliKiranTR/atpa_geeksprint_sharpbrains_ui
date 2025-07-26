@@ -57,3 +57,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Aggressive Chat Settings Fix */
+* {
+  line-height: 1.5 !important;
+}
+
+/* Target the specific modal/dialog */
+[role="dialog"] div,
+[class*="modal"] div,
+[class*="sidebar"] div {
+  margin-bottom: 12px !important;
+}
+
+/* Fix any text that appears after dropdowns */
+select ~ *,
+[role="combobox"] ~ * {
+  margin-top: 16px !important;
+}
+
+/* Fix all text in settings panels */
+div[class*="settings"] p,
+div[class*="settings"] div,
+div[class*="Settings"] p,
+div[class*="Settings"] div {
+  margin-bottom: 8px !important;
+  display: block !important;
+  clear: both !important;
+}
