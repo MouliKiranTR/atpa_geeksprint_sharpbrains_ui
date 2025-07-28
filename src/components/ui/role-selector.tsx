@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { UserRole } from '@/types'
-import { USER_ROLES } from '@/constants'
+import { ProductTypes, UserRole } from '@/types'
+import { PRODUCT_TYPES, USER_ROLES } from '@/constants'
 import { ChevronDown, Info, Briefcase } from 'lucide-react'
 
 interface RoleSelectorProps {
@@ -34,10 +34,6 @@ export function RoleSelector({
 
   return (
     <div className={cn('relative', className)}>
-      <Label className="text-sm font-medium mb-2 block">
-        Your Role
-      </Label>
-      
       {/* Main Selector Button */}
       <Button
         variant="outline"
@@ -85,7 +81,7 @@ export function RoleSelector({
                   onChange(role)
                   setIsOpen(false)
                 }}
-                onMouseEnter={() => setShowTooltip(role)}
+                onMouseEnter={() => setShowTooltip(null)}
                 onMouseLeave={() => setShowTooltip(null)}
               >
                 <span className="text-lg">{roleInfo.icon}</span>
@@ -108,7 +104,7 @@ export function RoleSelector({
                   className="h-6 w-6 p-0"
                   onClick={(e) => {
                     e.stopPropagation()
-                    setShowTooltip(showTooltip === role ? null : role)
+                    setShowTooltip(null)
                   }}
                 >
                   <Info className="h-3 w-3" />
@@ -204,6 +200,42 @@ export function SimpleRoleDropdown({
         {(Object.keys(USER_ROLES) as UserRole[]).map((role) => (
           <option key={role} value={role}>
             {USER_ROLES[role].icon} {USER_ROLES[role].name}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
+export function SimpleProductTypeDropdown({
+  value,
+  onChange,
+  className,
+  label = "Product Type",
+  placeholder = "Select product type...",
+  required = false
+}: {  
+  value: ProductTypes | ''
+  onChange: (productType: ProductTypes) => void
+  className?: string
+  label?: string
+  placeholder?: string
+  required?: boolean  
+}) {
+  return (
+    <div className={cn('space-y-2', className)}>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as ProductTypes)}
+        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        required={required} 
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {(Object.keys(PRODUCT_TYPES) as ProductTypes[]).map((productType) => (
+          <option key={productType} value={productType}>
+            {PRODUCT_TYPES[productType].icon} {PRODUCT_TYPES[productType].name}
           </option>
         ))}
       </select>

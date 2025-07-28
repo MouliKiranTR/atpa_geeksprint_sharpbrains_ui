@@ -1,4 +1,4 @@
-import { ProficiencyLevel, ProficiencyLevelInfo, AnalysisType, ReasoningFocus, UserRole, UserRoleInfo } from '@/types'
+import { ProficiencyLevel, ProficiencyLevelInfo, AnalysisType, ReasoningFocus, UserRole, UserRoleInfo, ProductTypes } from '@/types'
 
 export const API_ENDPOINTS = {
   CHAT: '/api/v1/chat/message',
@@ -305,6 +305,24 @@ export const REASONING_FOCUS: Record<ReasoningFocus, { name: string; description
   }
 } as const
 
+export const PRODUCT_TYPES: Record<ProductTypes, { name: string; description: string; icon: string }> = {
+  checkpoint: {
+    name: 'Checkpoint',
+    description: 'Checkpoint is a platform for AI-powered research and analysis',
+    icon: '📊'
+  },
+  westlaw: {
+    name: 'Westlaw',
+    description: 'Westlaw is a platform for legal research and analysis',
+    icon: '📊'
+  },
+  materia: {
+    name: 'Materia',
+    description: 'Materia is a platform for legal research and analysis',
+    icon: '📊'
+  }
+} as const
+
 // Default Settings
 export const DEFAULT_CHAT_SETTINGS = {
   proficiency_level: 'intermediate' as ProficiencyLevel,
@@ -314,7 +332,8 @@ export const DEFAULT_CHAT_SETTINGS = {
   include_screenshots: true,
   include_lucid: true,
   include_wiki: true,
-  include_github: true
+  include_github: true,
+  product_type: 'checkpoint' as ProductTypes
 }
 
 export interface ChatRequest {

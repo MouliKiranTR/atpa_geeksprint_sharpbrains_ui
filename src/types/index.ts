@@ -68,6 +68,8 @@ export interface ChatConfig {
 // Proficiency Level Types
 export type ProficiencyLevel = 'beginner' | 'intermediate' | 'expert' | 'executive'
 
+export type ProductTypes = 'checkpoint' | 'westlaw' | 'materia'
+
 export interface ProficiencyLevelInfo {
   name: string
   description: string
@@ -96,6 +98,7 @@ export interface EnhancedQueryRequest {
   query: string
   analysis_type?: AnalysisType
   proficiency_level?: ProficiencyLevel
+  product_type?: ProductTypes
   user_role?: UserRole
   figma_urls?: string[]
   lucid_diagram_ids?: string[]
@@ -152,4 +155,5 @@ export interface ChatSettings {
   include_lucid: boolean
   include_wiki: boolean
   include_github: boolean
+  product_type: ProductTypes
 } 

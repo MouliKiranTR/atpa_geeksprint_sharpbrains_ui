@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { ProficiencyLevel } from '@/types'
-import { PROFICIENCY_LEVELS } from '@/constants'
+import { PROFICIENCY_LEVELS, DEFAULT_CHAT_SETTINGS } from '@/constants'
 import { ChevronDown, Info } from 'lucide-react'
 
 interface ProficiencySelectorProps {
@@ -15,7 +15,7 @@ interface ProficiencySelectorProps {
 }
 
 export function ProficiencySelector({
-  value,
+  value = DEFAULT_CHAT_SETTINGS.proficiency_level,
   onChange,
   className,
   showDescription = false,
@@ -24,7 +24,9 @@ export function ProficiencySelector({
   const [isOpen, setIsOpen] = useState(false)
   const [showTooltip, setShowTooltip] = useState<ProficiencyLevel | null>(null)
 
-  const currentLevel = PROFICIENCY_LEVELS[value]
+  // Ensure we have a valid proficiency level
+  const safeValue = PROFICIENCY_LEVELS[value] ? value : DEFAULT_CHAT_SETTINGS.proficiency_level
+  const currentLevel = PROFICIENCY_LEVELS[safeValue]
 
   const sizeClasses = {
     sm: 'text-xs p-2',
@@ -34,10 +36,6 @@ export function ProficiencySelector({
 
   return (
     <div className={cn('relative', className)}>
-      <Label className="text-sm font-medium mb-2 block">
-        User Proficiency Level
-      </Label>
-      
       {/* Main Selector Button */}
       <Button
         variant="outline"
@@ -48,9 +46,11 @@ export function ProficiencySelector({
           isOpen && 'ring-2 ring-ring'
         )}
       >
-        <div className="flex items-center gap-2">
-          <span className="text-lg">{currentLevel.icon}</span>
-          <span className={currentLevel.color}>{currentLevel.name}</span>
+        <div className="flex items-center gap-2 mb-0">
+          <span className="text-lg">{currentLevel?.icon || '👤'}</span>
+          <span className={currentLevel?.color || 'text-gray-600'}>
+            {currentLevel?.name || 'Select Level'}
+          </span>
         </div>
         <ChevronDown 
           className={cn(
@@ -61,7 +61,7 @@ export function ProficiencySelector({
       </Button>
 
       {/* Description */}
-      {showDescription && (
+      {showDescription && currentLevel?.description && (
         <p className="text-xs text-muted-foreground mt-1">
           {currentLevel.description}
         </p>
@@ -72,7 +72,9 @@ export function ProficiencySelector({
         <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border rounded-md shadow-lg">
           {(Object.keys(PROFICIENCY_LEVELS) as ProficiencyLevel[]).map((level) => {
             const levelInfo = PROFICIENCY_LEVELS[level]
-            const isSelected = level === value
+            if (!levelInfo) return null
+            
+            const isSelected = level === safeValue
             
             return (
               <div
@@ -85,7 +87,7 @@ export function ProficiencySelector({
                   onChange(level)
                   setIsOpen(false)
                 }}
-                onMouseEnter={() => setShowTooltip(level)}
+                onMouseEnter={() => setShowTooltip(null)}
                 onMouseLeave={() => setShowTooltip(null)}
               >
                 <span className="text-lg">{levelInfo.icon}</span>
@@ -108,7 +110,7 @@ export function ProficiencySelector({
                   className="h-6 w-6 p-0"
                   onClick={(e) => {
                     e.stopPropagation()
-                    setShowTooltip(showTooltip === level ? null : level)
+                    setShowTooltip(null)
                   }}
                 >
                   <Info className="h-3 w-3" />
@@ -120,7 +122,7 @@ export function ProficiencySelector({
       )}
 
       {/* Tooltip */}
-      {showTooltip && (
+      {showTooltip && PROFICIENCY_LEVELS[showTooltip] && (
         <div className="absolute top-full left-0 right-0 z-60 mt-1 bg-popover border rounded-md shadow-lg p-4">
           <div className="space-y-2">
             <h4 className="font-semibold flex items-center gap-2">
@@ -160,24 +162,32 @@ export function ProficiencySelector({
 
 // Compact version for use in form inputs
 export function CompactProficiencySelector({
-  value,
+  value = DEFAULT_CHAT_SETTINGS.proficiency_level,
   onChange,
   className
 }: Pick<ProficiencySelectorProps, 'value' | 'onChange' | 'className'>) {
+  // Ensure we have a valid proficiency level
+  const safeValue = PROFICIENCY_LEVELS[value] ? value : DEFAULT_CHAT_SETTINGS.proficiency_level
+
   return (
     <select
-      value={value}
+      value={safeValue}
       onChange={(e) => onChange(e.target.value as ProficiencyLevel)}
       className={cn(
         'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
     >
-      {(Object.keys(PROFICIENCY_LEVELS) as ProficiencyLevel[]).map((level) => (
-        <option key={level} value={level}>
-          {PROFICIENCY_LEVELS[level].icon} {PROFICIENCY_LEVELS[level].name}
-        </option>
-      ))}
+      {(Object.keys(PROFICIENCY_LEVELS) as ProficiencyLevel[]).map((level) => {
+        const levelInfo = PROFICIENCY_LEVELS[level]
+        if (!levelInfo) return null
+        
+        return (
+          <option key={level} value={level}>
+            {levelInfo.icon} {levelInfo.name}
+          </option>
+        )
+      })}
     </select>
   )
 } 

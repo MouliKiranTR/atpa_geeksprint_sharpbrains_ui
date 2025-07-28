@@ -107,10 +107,10 @@ export function ChatContainer({
   }
 
   // Get current proficiency level and role info for display
-  const currentLevelInfo = PROFICIENCY_LEVELS[settings.proficiency_level]
-  const currentRoleInfo = USER_ROLES[settings.user_role]
+  const currentLevelInfo = PROFICIENCY_LEVELS[settings?.proficiency_level || DEFAULT_CHAT_SETTINGS.proficiency_level]
+  const currentRoleInfo = USER_ROLES[settings?.user_role || DEFAULT_CHAT_SETTINGS.user_role]
 
-  const showGitHubPane = settings.include_github && currentGithubFiles.length > 0;
+  const showGitHubPane = settings?.include_github && currentGithubFiles.length > 0;
 
   return (
     <div className={cn(
@@ -135,13 +135,17 @@ export function ChatContainer({
                 <>
                   <span>Connected • Ready to help</span>
                   <span className="text-primary">•</span>
-                  <span className={currentLevelInfo.color}>
-                    {currentLevelInfo.icon} {currentLevelInfo.name}
-                  </span>
+                  {currentLevelInfo && (
+                    <span className={currentLevelInfo.color}>
+                      {currentLevelInfo.icon} {currentLevelInfo.name}
+                    </span>
+                  )}
                   <span className="text-primary">•</span>
-                  <span className={currentRoleInfo.color}>
-                    {currentRoleInfo.icon} {currentRoleInfo.name}
-                  </span>
+                  {currentRoleInfo && (
+                    <span className={currentRoleInfo.color}>
+                      {currentRoleInfo.icon} {currentRoleInfo.name}
+                    </span>
+                  )}
                 </>
               ) : (
                 'Connecting...'
@@ -198,6 +202,7 @@ export function ChatContainer({
         )}>
           <MessageList
             messages={messages}
+            settings={settings}
             isTyping={isTyping}
             className="flex-1 min-h-0"
             onSuggestedMessageClick={handleSendMessage}
@@ -213,7 +218,7 @@ export function ChatContainer({
                 ? "Connecting..." 
                 : error 
                 ? "Fix connection to continue..." 
-                : `Ask me anything (${currentLevelInfo.name} • ${currentRoleInfo.name})...`
+                : `Ask me anything (${currentLevelInfo?.name || 'Loading'} • ${currentRoleInfo?.name || 'Loading'})...`
             }
           />
         </div>

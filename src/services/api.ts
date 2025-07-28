@@ -202,6 +202,8 @@ class ApiService {
             include_lucid: settings.include_lucid,
             include_wiki: settings.include_wiki,
             include_github: settings.include_github,
+            expert_level: settings.proficiency_level,
+            user_role: settings.user_role,
             max_visual_items: 1,
           }
         )

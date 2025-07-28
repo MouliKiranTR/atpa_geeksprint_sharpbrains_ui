@@ -1,19 +1,22 @@
 import React, { useEffect, useRef } from 'react'
-import { Message as MessageType } from '@/types'
+import { ChatSettings, Message as MessageType } from '@/types'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Message } from './message'
 import { cn } from '@/lib/utils'
+import { PRODUCT_TYPES } from '@/constants'
 
 interface MessageListProps {
   messages: MessageType[]
   isTyping?: boolean
   className?: string
   autoScroll?: boolean
+  settings: ChatSettings
   onSuggestedMessageClick?: (message: string) => void
 }
 
 export function MessageList({ 
   messages, 
+  settings,
   isTyping = false, 
   className,
   autoScroll = true,
@@ -70,15 +73,12 @@ export function MessageList({
               👋 Welcome to Onboarding Chat
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              I&apos;m your AI onboarding assistant! I&apos;m here to help you get started and answer any questions you might have. 
+              I&apos;m your AI onboarding assistant! I&apos;m here to help you get started and answer any questions you might have with {PRODUCT_TYPES[settings.product_type].name}. 
               Feel free to ask me about:
             </p>
             <div className="grid grid-cols-1 gap-2 mt-4">
               <div className="p-3 bg-muted/50 rounded-lg text-xs text-left">
                 💼 Getting started with your role
-              </div>
-              <div className="p-3 bg-muted/50 rounded-lg text-xs text-left">
-                🏢 Company policies and procedures
               </div>
               <div className="p-3 bg-muted/50 rounded-lg text-xs text-left">
                 🛠️ Tools and resources available
