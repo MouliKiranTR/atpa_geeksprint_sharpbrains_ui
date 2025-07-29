@@ -90,3 +90,7 @@ div[class*="Settings"] div {
   display: block !important;
   clear: both !important;
 }
+
+[data-vaul-drawer][data-vaul-drawer-direction=bottom]::after {
+  height: 0% !important;
+}
